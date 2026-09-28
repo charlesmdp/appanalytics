@@ -59,7 +59,7 @@ Tarifs vérifiés le 28 septembre 2026 : [Workers](https://developers.cloudflare
 
 ## Analyse IA, facultative
 
-Les observations chiffrées et les scénarios sont déjà disponibles sans IA. Pour activer l'analyse IA, ouvre **Settings → Variables and Secrets**, modifie la variable texte **AI_ENABLED** en **true**, puis valide **Deploy**. La connexion Workers AI est déjà prévue : aucune clé OpenAI à acheter ou à configurer. L'utilisation de Workers AI suit sa tarification propre ; elle n'est pas comprise dans l'estimation ci-dessus.
+Les observations chiffrées et les scénarios sont déjà disponibles sans IA. Pour activer l'analyse IA, ouvre **Settings → Variables and Secrets**, ajoute la variable texte **AI_ENABLED** avec la valeur **true**, puis valide **Deploy**. La connexion Workers AI est déjà prévue : aucune clé OpenAI à acheter ou à configurer. L'utilisation de Workers AI suit sa tarification propre ; elle n'est pas comprise dans l'estimation ci-dessus.
 
 L'analyse est déclenchée seulement par le bouton du dashboard. Elle transmet uniquement des chiffres agrégés, jamais les jetons, noms ou domaines de boutiques, identifiants de transaction ou détails clients. Les réponses identiques sont mises en cache une heure. Le modèle utilisé est `@cf/meta/llama-3.3-70b-instruct-fp8-fast`. Un texte d'IA reste une interprétation à vérifier.
 
