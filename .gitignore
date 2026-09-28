@@ -1,0 +1,20 @@
+node_modules/
+dist/
+data/
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.local
+fly.toml
+.DS_Store
+*.log
+.claude/
+
+# Cloudflare secrets and local state
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.wrangler/
+cloudflare/dist/
+cloudflare/wrangler.local.jsonc

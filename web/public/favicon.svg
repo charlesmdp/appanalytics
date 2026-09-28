@@ -1,0 +1,8 @@
+<!--
+  The same mark as web/src/components/Logo.tsx, with the tokens resolved: a
+  static file cannot read a custom property. Keep the two paths in step.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="9" fill="#2E72D2"/>
+  <path fill="#FFFFFF" fill-rule="evenodd" d="M9 7H16.5A6 6 0 0 1 16.5 19H13V25H9Z M13 10.5H16.5A2.5 2.5 0 0 1 16.5 15.5H13Z"/>
+</svg>

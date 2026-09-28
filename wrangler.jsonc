@@ -1,0 +1,44 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "penida-analytics",
+  "main": "cloudflare/src/index.ts",
+  "compatibility_date": "2026-09-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./cloudflare/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true,
+  },
+  "vars": { "PARTNER_API_VERSION": "2026-07", "AI_ENABLED": "false" },
+  "build": { "command": "npm run cf:build" },
+  "keep_vars": true,
+  "ai": { "binding": "AI" },
+  "d1_databases": [
+    {
+      "binding": "BIG_DOWNLOAD_DB",
+      "database_name": "penida-big-download",
+      "migrations_dir": "cloudflare/migrations",
+    },
+    {
+      "binding": "COWLENDAR_DB",
+      "database_name": "penida-cowlendar",
+      "migrations_dir": "cloudflare/migrations",
+    },
+  ],
+  "queues": {
+    "producers": [{ "binding": "SYNC_QUEUE", "queue": "penida-sync" }],
+    "consumers": [
+      {
+        "queue": "penida-sync",
+        "max_batch_size": 1,
+        "max_batch_timeout": 1,
+        "max_retries": 5,
+        "max_concurrency": 2,
+      },
+    ],
+  },
+  "triggers": { "crons": ["*/15 * * * *"] },
+  "observability": { "enabled": true },
+  "limits": { "cpu_ms": 30000 },
+}

@@ -1,0 +1,3019 @@
+/*
+ * Lumina Modern — the design system this dashboard is drawn in.
+ *
+ * "Clarity through contrast": light mode builds depth from subtle borders and
+ * shadows; dark mode builds it from surface *value* — page, container, and card
+ * are three steps of elevation — so shadows stay out of the dark theme entirely.
+ *
+ * Colour is referenced by role, never by hex, so the two blocks below are the
+ * only place a theme swap has to happen. Where a system hex could not clear the
+ * contrast floor on a given surface, the token shifts and the deviation is noted
+ * on the line; the brand hue is never changed, only its lightness.
+ */
+:root {
+  color-scheme: light;
+
+  /* --- surfaces (Lumina light) ------------------------------------------ */
+  --page: #f8fafc;
+  /* Surface */
+  --surface-1: #ffffff;
+  /* Surface Bright — cards */
+  --surface-2: #f1f5f9;
+  /* Surface Container Low — rail, inputs, insets */
+
+  /* --- content ----------------------------------------------------------- */
+  --text-primary: #0f172a;
+  /* On Surface */
+  --text-secondary: #475569;
+  /* On Surface Variant */
+  --muted: #64748b;
+  /* tertiary; 4.7:1 on both light surfaces */
+  --border: #cbd5e1;
+  /* Outline */
+  --hover-wash: rgba(15, 23, 42, 0.05);
+
+  /* --- brand -------------------------------------------------------------- */
+  --brand: #2e72d2;
+  /* Electric Blue — 4.7:1 on white */
+  --brand-hover: #2560b4;
+  --brand-on: #ffffff;
+  /* text on a brand fill */
+  --brand-accent: var(--brand);
+  /* strokes and links on a surface */
+
+  /* --- charts -------------------------------------------------------------
+   * Slot 1 is the brand. Slots 2-4 extend the system for breakdowns, which it
+   * does not specify: distinct hues, each clearing 3:1 on the card surface, and
+   * deliberately clear of the green/red the semantic roles own.
+   */
+  --series-1: var(--brand-accent);
+  --series-2: #7c5ce0;
+  --series-3: #0e9aa7;
+  --series-4: #b87309;
+  /* system amber darkened; #e8912a is 2.5:1 on white */
+
+  /* Low contrast against the surface, per the system: read the shape, not the
+     scaffolding. Both are measured against the card, where plots are drawn. */
+  --grid: #e2e8f0;
+  --axis: #cbd5e1;
+
+  /* --- semantics ----------------------------------------------------------
+   * Two weights each: a mark colour that only owes 3:1, and a text colour that
+   * owes 4.5:1 at the 12px the delta line is set in.
+   */
+  --good: #16a34a;
+  /* system #22c55e is 2.3:1 on white */
+  --critical: #ef4444;
+  --delta-up: #15803d;
+  --delta-down: #dc2626;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.05);
+
+  /* --- the rule ----------------------------------------------------------
+   * `--border` draws the edge of a *thing* — a card, a field, a pill — and has
+   * to be found by the eye. A rule *between* rows of one thing has the opposite
+   * job: the eye should be able to run down a column without counting the lines
+   * it crosses. It is a separate token because it is a separate job, and every
+   * row divider in the dashboard is drawn in it.
+   *
+   * `--grid` is the chart gridline and `--border` is a card's edge; both were
+   * standing in for this, and both were chosen for something else.
+   */
+  --rule: #edf1f6;
+
+  /* --- spacing ------------------------------------------------------------
+   * One scale, six steps, used everywhere a gap is deliberate. Colour here is
+   * already a system — every value is a role, maintained in both themes — and
+   * spacing was not: the same idea is written as 10, 12, 14, 16, 18 and 20 in
+   * different files, so two forms side by side never agree on what "a gap
+   * between fields" is.
+   *
+   *   1  4px   inside a control: a label and the hint under it
+   *   2  8px   between siblings that belong together
+   *   3 12px   between fields on one row
+   *   4 16px   between rows of a form, between cards
+   *   5 24px   between sections of a form or a page
+   *   6 32px   between a page's major bands
+   */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* The card's own padding, named so that anything wanting to sit flush with a
+     card's content — or to bleed past it — can measure against the real value
+     instead of repeating the number. */
+  --card-px: 16px;
+  --card-py: 14px;
+
+  --radius: 8px;
+
+  /* --- the shell ----------------------------------------------------------
+   * The rail's two widths, named because the grid and the rail itself both
+   * state them and a disagreement is a visible seam.
+   *
+   * `--measure` is a ceiling on the report, not a target: wide enough that no
+   * ordinary display reaches it, and there only so a row of cards on very wide
+   * glass stops before it stops reading as a row.
+   */
+  --rail: 256px;
+  --rail-collapsed: 64px;
+  --measure: 2400px;
+}
+
+/*
+ * The theme is always explicit — dark unless the reader has asked for light —
+ * so there is no `prefers-color-scheme` branch to keep in step with this one.
+ * index.html stamps `data-theme` before the first paint.
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --page: #0d0d0d;
+  /* Surface */
+  --surface-1: #1a1a19;
+  /* Surface Bright — cards */
+  --surface-2: #262624;
+  /* Surface Container Low — rail, inputs, insets */
+
+  --text-primary: #e2e2e6;
+  /* On Surface */
+  --text-secondary: #c4c6d0;
+  /* On Surface Variant */
+  --muted: #a8abb5;
+  /* tertiary; 4.7:1 on the card surface */
+  --border: #44474e;
+  /* Outline */
+  --hover-wash: rgba(226, 226, 230, 0.08);
+
+  /* The fill keeps the brand hex — white on it is 4.7:1 — but anything drawn
+     *as a mark* on the elevated card needs lifting: #2e72d2 there is 2.4:1. */
+  --brand-hover: #3b82e6;
+  --brand-accent: #6ba3e8;
+
+  --series-2: #a48bec;
+  --series-3: #2fbecc;
+  --series-4: #e8912a;
+  /* the system amber reads here; no darkening needed */
+
+  --grid: #4a4d53;
+  --axis: #5a5d64;
+
+  --good: #22c55e;
+  --critical: #f87171;
+  --delta-up: #4ade80;
+  --delta-down: #fca5a5;
+
+  /* Elevation is carried by surface value in dark mode, not by shadow. */
+  --shadow-sm: none;
+  --shadow-md: none;
+
+  /* One step up from the card it is drawn on, not five. */
+  --rule: #2b2b2a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text-primary);
+  font-family: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Semi-bold and tightened, at every size the dashboard sets a heading in. */
+h1,
+h2,
+h3,
+.card-value,
+.stat-value {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------------- shell */
+
+/*
+ * A two-column shell: a fixed rail and a scrolling report. The rail's width is
+ * the only thing collapsing changes, so the grid does the animation and the
+ * cards reflow for free.
+ */
+.shell {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.shell.collapsed {
+  grid-template-columns: var(--rail-collapsed) minmax(0, 1fr);
+}
+
+/* A column, so the sign-out item can claim the foot of the rail rather than
+   trailing whichever nav group happens to be last. */
+.nav {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 16px 12px;
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+}
+
+.nav-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 6px 14px;
+}
+
+.nav-brand {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/*
+ * Collapsed, a label leaves the page but not the document.
+ *
+ * `display: none` takes the wordmark and the item names out of the
+ * accessibility tree with them, so a collapsed rail is a column of unnamed
+ * glyphs and a wordless mark to anything not reading it with its eyes. The
+ * hover titles are the only naming left, and a `title` is a last-resort
+ * accessible name, not a plan.
+ *
+ * Clipped rather than removed. Every item keeps its name for a screen reader,
+ * the wordmark still says whose dashboard this is, and the hover title still
+ * names each icon for a sighted reader who cannot place one.
+ */
+.nav.collapsed .nav-brand,
+.nav.collapsed .nav-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+ * The monogram. Sized here rather than in the component so the rail and the
+ * login card can each ask for the size they need from one shape.
+ */
+.brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+}
+
+.nav-identity {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+/*
+ * Collapsed, the mark and the toggle cannot sit side by side — 26 and 28 pixels
+ * do not fit in a 40px content column — so the head stacks and the mark takes
+ * the top, where a logo belongs.
+ */
+.nav.collapsed .nav-head {
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 0 14px;
+}
+
+.nav-toggle {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.nav-toggle:hover {
+  background: var(--hover-wash);
+}
+
+.nav-toggle svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-group+.nav-group {
+  margin-top: 16px;
+}
+
+.nav-group-label {
+  padding: 0 8px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Collapsed, the group heading would be a word with nothing under it; a rule
+   keeps the grouping visible without the label. */
+.nav.collapsed .nav-group-label {
+  height: 1px;
+  margin: 0 8px 8px;
+  padding: 0;
+  overflow: hidden;
+  color: transparent;
+  background: var(--border);
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background: var(--hover-wash);
+  color: var(--text-primary);
+}
+
+/* The current page is the one place in the rail the brand appears, so it reads
+   as position rather than as decoration. */
+.nav-link.active {
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  color: var(--brand-accent);
+  font-weight: 600;
+}
+
+.nav-icon {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav.collapsed .nav-link {
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* `margin-top: auto` takes the slack in the column, so the rule sits directly
+   above the pair on a short rail and at the foot of the viewport on a tall one.
+   The theme control and sign-out live here together: neither is a destination,
+   and they are the two things you reach for after you have finished reading. */
+.nav-foot {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+/* A button wearing a nav item's clothes: the browser's own button styling has
+   to be undone for the two to line up with the links above them. */
+.nav-action {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-action:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}
+
+/*
+ * The report, which takes the width it is given.
+ *
+ * This was capped at a fixed measure, on the reasoning that a table running the
+ * full width of a 27-inch display is hard to read across — which is true of
+ * prose and of a single wide table, and false of this page. What is actually on
+ * it is a grid of cards that reflow: more width means another card on the row,
+ * not a longer line. The cap was answering a question the layout does not ask,
+ * and everything past it became a gap on the right that got wider with the
+ * display.
+ *
+ * Collapsing the rail is what made that visible. It moves 192px from the rail
+ * to the column beside it, and under a fixed cap the report ignored all of them:
+ * the content kept its width and the 192px opened as dead space on the right, so
+ * the one control whose entire purpose is to give the report more room gave it
+ * none. With nothing capping the report, the column grows and the content grows
+ * with it.
+ *
+ * `--measure` survives as a ceiling rather than a target, and it is deliberately
+ * far out: past about 2400px a row of cards stops reading as a row. Anyone
+ * inside that — every laptop and nearly every desktop — sees the full width.
+ */
+.main {
+  min-width: 0;
+  max-width: var(--measure);
+  padding: var(--space-5) 20px 64px;
+}
+
+/* Under a tablet the rail goes horizontal so the report keeps the full width. */
+@media (max-width: 720px) {
+
+  .shell,
+  .shell.collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nav {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  /*
+   * Collapse is meaningless here and is undone.
+   *
+   * The rail is horizontal under a tablet and the toggle that would set the
+   * state is not on the page, so a reader who collapsed the rail on a laptop
+   * arrives on a phone to a row of unlabelled glyphs, group headings reduced
+   * to stray 1px rules, and no control anywhere to undo it. The state survives
+   * in storage; it just stops being expressed.
+   */
+  .nav.collapsed .nav-head {
+    flex-direction: row;
+    padding: 0 6px 14px;
+  }
+
+  .nav.collapsed .nav-brand,
+  .nav.collapsed .nav-label {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    clip: auto;
+  }
+
+  .nav.collapsed .nav-link {
+    justify-content: flex-start;
+    padding: 7px 8px;
+  }
+
+  .nav.collapsed .nav-group-label {
+    height: auto;
+    margin: 0;
+    padding: 0 8px 6px;
+    overflow: visible;
+    color: var(--muted);
+    background: none;
+  }
+
+  .nav-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Horizontal rail: there is no "foot" to pin to, so it becomes one more item
+     in the row rather than a full-width bar under everything. */
+  .nav-foot {
+    display: flex;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+  }
+
+  .nav-action {
+    width: auto;
+  }
+}
+
+/* ---------------------------------------------------------------- header */
+
+/* Top-aligned rather than baseline-aligned: whatever sits on the right of the
+   title has no text to share a baseline with, so it would hang below the
+   greeting instead of beside it. */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: 20px;
+}
+
+.masthead-title {
+  min-width: 0;
+}
+
+/*
+ * The page's primary action, on the title's line and at the right of it.
+ *
+ * Empty on a page that declares no action, and an empty flex child takes no
+ * room, so such a page is laid out exactly as it was before the slot existed.
+ */
+.masthead h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.masthead .subtitle {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 2px 0 0;
+}
+
+/* --------------------------------------------------------------- filters */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 14px 0px;
+  margin-bottom: 20px;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+/*
+ * The child combinator is load-bearing. A `.control` that holds a group of
+ * checkboxes holds labels of its own, and unscoped this rule sets those in
+ * 11px muted uppercase — the field-label treatment — so a checkbox's *name*
+ * reads as a second field label and the box floats above it.
+ */
+.control > label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.control select,
+.control input {
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-primary);
+  /* Inset rather than flush with the card: in dark mode the value step is what
+     tells a field from the panel it sits on, since there is no shadow to do it. */
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  min-width: 150px;
+}
+
+.control select:focus-visible,
+.control input:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+  border-color: var(--brand);
+}
+
+.control input[type='date'] {
+  min-width: 160px;
+}
+
+.control-note {
+  flex: 1 1 auto;
+  min-width: 180px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+  align-self: center;
+}
+
+/* ----------------------------------------------------------- metric cards */
+
+/*
+ * Three across at most, on every page. `auto-fit` would pack four onto a wide
+ * screen and break the row rhythm, so the count is fixed and only the breakpoints
+ * below it step down.
+ *
+ * Six tracks rather than three, because six divides by both two and three: a
+ * card takes two of them normally, and a short final row can take three each and
+ * still land on the same edges. Every step below just changes the span.
+ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card-grid>.card {
+  grid-column: span 2;
+}
+
+/*
+ * A page with five cards would otherwise end on a pair that stops two-thirds of
+ * the way across, leaving a hole where the eye expects the grid to end. The pair
+ * splits the row instead — half each.
+ *
+ * "Starts a row and is second-to-last" is the whole test: 3n+1 is the first card
+ * of a row, and nth-last-child(2) means only one follows it. Below three across
+ * a pair already fills the row, so the rule is scoped to the widest step.
+ */
+@media (min-width: 1101px) {
+
+  .card-grid>.card:not(.full):nth-child(3n + 1):nth-last-child(2),
+  .card-grid>.card:not(.full):nth-child(3n + 1):nth-last-child(2)~.card:not(.full) {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 1100px) {
+  .card-grid>.card {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 760px) {
+  .card-grid>.card {
+    grid-column: span 6;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  padding: 14px 16px 10px;
+  min-width: 0;
+}
+
+.card.full {
+  grid-column: 1 / -1;
+}
+
+/*
+ * Cards stacked straight onto the page rather than laid out in `.card-grid` get
+ * no gap from anything, so they sit flush against each other. Same 16px the
+ * grid uses, so a stack and a grid read as one rhythm.
+ */
+.main>.card {
+  margin-bottom: 16px;
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/*
+ * Two lines are reserved whether or not the subtitle needs them, so the big
+ * numbers in a row share a baseline. Without the floor, one card whose subtitle
+ * wraps drops its value half a line below its neighbours and the row reads as
+ * misaligned rather than as a set.
+ */
+.card-subtitle {
+  margin: 3px 0 0;
+  min-height: 3em;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.card.full .card-subtitle {
+  min-height: 0;
+}
+
+.card-value {
+  margin-top: 6px;
+  font-size: 28px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * The change and the figure behind it. The percentage carries the tone; the
+ * "vs …" clause stays muted so a card scans as one number, not two.
+ */
+.card-delta {
+  margin: 3px 0 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.card-delta-figure {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.card-delta.up .card-delta-figure {
+  color: var(--delta-up);
+}
+
+.card-delta.down .card-delta-figure {
+  color: var(--delta-down);
+}
+
+.card-delta-note {
+  color: var(--muted);
+}
+
+/* The plot takes whatever height is left, so cards in a row end level. */
+.card .plot {
+  margin-top: auto;
+}
+
+.card-toggle {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  padding: 4px 9px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.card-toggle:hover {
+  background: var(--hover-wash);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0 0 8px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+}
+
+/* Height is set inline per card; the width always fills its column. */
+.plot {
+  width: 100%;
+}
+
+/* --------------------------------------------------------------- tooltip */
+
+.tooltip {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  font-size: 12px;
+  min-width: 150px;
+}
+
+.tooltip-date {
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 1px 0;
+  color: var(--text-secondary);
+}
+
+.tooltip-row .name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tooltip-row .value {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip-row.total {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid var(--border);
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------- table view */
+
+/*
+ * A table bleeds to the edges of the card it is in.
+ *
+ * Two things follow from that, and they are the same decision seen twice.
+ *
+ * The row rule spans the whole container. A rule that stops 16px short at each
+ * end reads as a line drawn *under some text*; one that runs edge to edge reads
+ * as the seam between two rows, which is what it is. So the scroll container
+ * cancels the card's padding and the rules run the full width of the card.
+ *
+ * The text then lines up with everything else on the card. The first column
+ * takes the card's own padding back — not as decoration, but so the first
+ * merchant name starts on the same vertical as the card's label above it and
+ * the stat tiles beside it. What is gone is the extra 10px a cell used to carry
+ * on both sides, which put the table's content 10px inside every other thing on
+ * the page and made the table look like it was sitting in a box of its own.
+ *
+ * Columns are separated by a gap on the *left* of every cell but the first, so
+ * a column boundary is one space rather than two half-spaces, and the outermost
+ * columns never pay for it.
+ */
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--card-px)) var(--space-3);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  text-align: right;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+th+th,
+td+td {
+  padding-left: var(--space-4);
+}
+
+th:first-child,
+td:first-child {
+  padding-left: var(--card-px);
+  text-align: left;
+}
+
+th:last-child,
+td:last-child {
+  padding-right: var(--card-px);
+}
+
+thead th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/*
+ * A ledger table, where the sign of a figure is half of what it says.
+ *
+ * Colour is the second cue, never the only one: the minus sign is already in
+ * the formatted value, so the palette speeds the read for those who see it and
+ * takes nothing away from those who do not.
+ */
+.cell-down {
+  color: var(--delta-down);
+}
+
+.cell-up {
+  color: var(--delta-up);
+}
+
+/* The column the others add up to, carried at full weight so the eye lands on
+   it after crossing the row rather than having to hunt for the last cell. */
+.cell-emphasis {
+  font-weight: 600;
+}
+
+/* A share is the same fact as the figure beside it, read a second way, so it
+   sits back rather than competing with the money for attention. */
+.cell-share {
+  color: var(--text-secondary);
+}
+
+/* Wide enough for a long app name and two figures, narrow enough that the row
+   still reads as one line. Below that width it behaves like any other table and
+   scrolls. */
+.share-wrap table {
+  max-width: 640px;
+}
+
+thead th.cell-emphasis {
+  color: var(--text-primary);
+}
+
+/*
+ * The window total. A stronger rule above it separates the summary from the
+ * periods, the way a rule under a column of figures does on paper.
+ */
+tfoot th,
+tfoot td {
+  border-bottom: none;
+  border-top: 2px solid var(--rule);
+  font-weight: 600;
+}
+
+/* Only where a total row follows: elsewhere the closing rule is the table's
+   own bottom edge and is doing its job. */
+table:has(tfoot) tbody tr:last-child th,
+table:has(tfoot) tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ------------------------------------------------------------- customers */
+
+/*
+ * The search field is the page's primary action, so it is allowed to grow
+ * while the other controls keep their intrinsic width.
+ */
+.control-search {
+  flex: 1 1 320px;
+  max-width: 460px;
+}
+
+.control input[type='search'] {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.control input[type='search']:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+.customer-table td {
+  vertical-align: middle;
+}
+
+.customer-link {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.customer-link:hover .customer-name {
+  text-decoration: underline;
+}
+
+.customer-name {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.customer-domain {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.customer-table tbody tr:hover {
+  background: var(--hover-wash);
+}
+
+/*
+ * Status is carried by the label, never by colour alone — the palette's
+ * magenta and yellow fall below 3:1 on this surface in light mode, so a reader
+ * who cannot separate them still reads the word.
+ */
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.pill-paying,
+.pill-sub-active {
+  color: var(--delta-up);
+  border-color: color-mix(in srgb, var(--delta-up) 40%, transparent);
+}
+
+.pill-trialing,
+.pill-sub-trialing {
+  color: var(--brand-accent);
+  border-color: color-mix(in srgb, var(--brand-accent) 40%, transparent);
+}
+
+/* A plan change is neither a win nor a loss, so it stays neutral. */
+.pill-sub-replaced,
+.pill-sub-pending {
+  color: var(--muted);
+}
+
+.pill-churned,
+.pill-gone,
+.pill-sub-churned {
+  color: var(--delta-down);
+  border-color: color-mix(in srgb, var(--delta-down) 40%, transparent);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pager button {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 12px;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.pager button:hover:not(:disabled) {
+  background: var(--hover-wash);
+}
+
+.pager button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* -------------------------------------------------------- customer detail */
+
+.customer-head {
+  margin-bottom: 18px;
+}
+
+.back-link {
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--text-primary);
+}
+
+.customer-title {
+  margin: 6px 0 2px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.customer-domain-link {
+  color: var(--brand-accent);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.customer-domain-link:hover {
+  text-decoration: underline;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .stat-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.stat {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  padding: 14px 16px;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  margin-top: 4px;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-note {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.cadence {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* ----------------------------------------------------------- the timeline */
+
+/*
+ * A single rule runs behind the markers so the eye can follow the sequence
+ * without each row needing its own border.
+ */
+.timeline {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0 0 0 4px;
+  position: relative;
+  max-height: 620px;
+  overflow-y: auto;
+}
+
+.event {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding: 8px 0 8px 2px;
+}
+
+.event::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--grid);
+}
+
+.event:first-child::before {
+  top: 16px;
+}
+
+.event:last-child::before {
+  bottom: calc(100% - 16px);
+}
+
+.event-marker {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--surface-1);
+  border: 2px solid var(--axis);
+}
+
+.event-good .event-marker {
+  border-color: var(--delta-up);
+}
+
+.event-bad .event-marker {
+  border-color: var(--critical);
+}
+
+.event-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.event-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.event-label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.event-figure {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.event-good .event-figure {
+  color: var(--delta-up);
+}
+
+.event-bad .event-figure {
+  color: var(--delta-down);
+}
+
+.event-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.event-meta span+span::before {
+  content: '·';
+  margin-right: 8px;
+}
+
+/* --------------------------------------------------------- notifications */
+
+/*
+ * Name, URL, and the button on one line, with the URL taking the slack. Slack
+ * webhook URLs run to about 80 characters, and a field that shows half of one
+ * makes a pasted credential impossible to check before saving.
+ */
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.control-grow {
+  flex: 1 1 380px;
+}
+
+.control-grow input {
+  width: 100%;
+}
+
+button.primary,
+.channel-actions button {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* The one filled control on the page. Brand blue carries white at 4.7:1, so the
+   fill is the same hex in both themes — only the hover step differs. */
+button.primary {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--brand-on);
+  font-weight: 500;
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+}
+
+.channel-actions button:hover:not(:disabled) {
+  background: var(--hover-wash);
+}
+
+button.primary:focus-visible,
+.channel-actions button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+button.primary:disabled,
+.channel-actions button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.channel-actions button.danger {
+  border-color: var(--critical);
+  color: var(--delta-down);
+}
+
+/* ----------------------------------------------------------------- forms
+ *
+ * One rhythm for every form in the dashboard.
+ *
+ * A form is a card with rows dropped into it and no spacing of its own:
+ * `.field-row` carries no vertical margin — correct everywhere it appears
+ * once, inside something that already spaces it, and wrong the moment a form
+ * stacks six — so what air there is comes from whichever child happens to have
+ * a margin, and the same gap is written as 10, 12, 14 and 18 depending on the
+ * file. `.form-stack` exists because of exactly this, and it only covers the
+ * one form that hit it first.
+ *
+ * The form is a column with one gap between its parts, and the parts reset
+ * their own margins so the column owns the rhythm outright.
+ */
+.channel-form {
+  gap: var(--space-5);
+  padding: var(--space-5) var(--card-px);
+}
+
+.channel-form > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* The subtitle belongs to the heading above it, not to the gap below it. */
+.channel-form > .card-label + .card-subtitle,
+.channel-form > .card-head + .card-subtitle {
+  margin-top: calc(var(--space-2) - var(--space-5));
+  max-width: 72ch;
+}
+
+/*
+ * Where a form ends. Separated by a rule and the section gap rather than
+ * sitting flush under the last field, so "submit" is visibly not one more
+ * thing to fill in.
+ */
+.channel-form > .channel-actions {
+  flex-wrap: wrap;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--rule);
+}
+
+/*
+ * A checkbox and its name.
+ *
+ * The box lines up with the FIRST LINE of the label, at any font size and
+ * whether the label runs to one line or three. `1lh` is one line of the
+ * label's own text — the input takes `font: inherit` so it resolves against
+ * the label rather than against the browser's form font — so the box centres
+ * itself in that line by arithmetic instead of by a hand-tuned nudge.
+ */
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.check > input[type='checkbox'] {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  /* `.control input` sets a 150px floor, written for text fields, and a
+     checkbox inside a `.control` inherits it: the box stays 15px and reserves
+     150, which is a gulf between the box and its name. A box states its own
+     size. */
+  min-width: 0;
+  margin: 0;
+  margin-block: calc((1lh - 15px) / 2);
+  font: inherit;
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+
+.check > input[type='checkbox']:disabled {
+  cursor: default;
+}
+
+.check:has(input:disabled) {
+  color: var(--muted);
+  cursor: default;
+}
+
+/* Several of them. Wide enough apart that a box reads as belonging to the name
+   on its right rather than to the one on its left. */
+.check-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+/* Used as a plain container by Notifications and as a real <ul> by App
+   listings, so the list reset lives here rather than at either call site. */
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* The monospace `.channel-hint` is for a masked credential. Prose in the same
+   slot — a review count, a listing title — is not that, and reads badly in it. */
+.channel-note {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.channel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  /* The same edge every card in the system keeps: a panel listed under a card
+     used to run 20px while the card above it ran 16, so two labels one level
+     apart never lined up. */
+  padding: var(--space-4) var(--card-px);
+}
+
+.channel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.channel-name {
+  margin: 0;
+  font-size: 15px;
+}
+
+.channel-hint {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.channel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.topic-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.topic+.topic {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--rule);
+}
+
+/*
+ * A checkbox styled as a switch. The input keeps its own semantics and stays in
+ * the tab order — the track is decoration drawn beside it, not a div pretending
+ * to be a control — so keyboard and screen-reader use are unaffected.
+ */
+.switch {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.switch-track {
+  flex: none;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 45%, transparent);
+  border: 1px solid var(--border);
+  transition: background 120ms ease;
+}
+
+.switch-track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface-1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 120ms ease;
+}
+
+.switch input:checked+.switch-track {
+  background: var(--good);
+}
+
+.switch input:checked+.switch-track::after {
+  transform: translateX(16px);
+}
+
+.switch input:focus-visible+.switch-track {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.switch input:disabled+.switch-track {
+  opacity: 0.5;
+}
+
+.switch-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topic-label {
+  font-weight: 600;
+}
+
+.topic-description {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* What the toggle actually sends, spelled out. A switch whose scope has to be
+   guessed at is a switch nobody turns on. */
+.topic-covers {
+  list-style: none;
+  margin: 10px 0 0 50px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.topic-covers li {
+  color: var(--muted);
+  font-size: 12px;
+  background: var(--hover-wash);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.channel-status {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.channel-status.good {
+  color: var(--delta-up);
+}
+
+.channel-status.bad {
+  color: var(--delta-down);
+}
+
+/* -------------------------------------------------------------- messages */
+
+.notice {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  padding: 20px 22px;
+  margin-bottom: 20px;
+}
+
+.notice h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.notice p {
+  margin: 0 0 8px;
+  color: var(--text-secondary);
+}
+
+.notice code {
+  background: var(--hover-wash);
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.notice.error {
+  border-color: var(--critical);
+}
+
+.footnote {
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Carries the word "failed" as well as the colour, so the warning does not
+   depend on being able to separate red from grey. */
+.footnote-warn {
+  color: var(--delta-down);
+}
+
+.skeleton {
+  color: var(--muted);
+  padding: 40px 0;
+  text-align: center;
+}
+
+/* ----------------------------------------------------------------- login */
+
+/*
+ * The one screen with no rail, so it centres in the viewport rather than
+ * inheriting the shell's two-column grid.
+ */
+.login-page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+/* The session check is a single request; this holds the frame while it answers
+   so the login card does not flash past for a reader who is already signed in. */
+.login-wait {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  padding: 28px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+}
+
+/* The mark leads on the one screen that has no rail to carry it. */
+.login-identity {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.login-identity .brand-mark {
+  width: 32px;
+  height: 32px;
+}
+
+.login-brand {
+  margin: 0;
+  font-size: 20px;
+}
+
+.login-blurb {
+  margin: 4px 0 20px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.login-card .control input {
+  width: 100%;
+  min-width: 0;
+}
+
+/* A `.check` with a place on the login card. The layout is the shared one. */
+.login-remember {
+  margin-top: var(--space-4);
+}
+
+/* Indented to the label's own left edge — the box's width plus the gap — so
+   the note reads as belonging to the choice above it. */
+.login-note {
+  margin: var(--space-1) 0 0 calc(15px + var(--space-2));
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Below the button rather than above it: the reader's eye is already there,
+   having just pressed it. `role="alert"` carries the same news to a reader who
+   cannot see where it landed. */
+.login-error {
+  margin: 12px 0 0;
+  color: var(--delta-down);
+  font-size: 13px;
+}
+/* ---------------------------------------------------------------- reviews
+ *
+ * A review is prose, so it is set as prose: a list of readable blocks rather
+ * than table rows that would clip the one part worth reading.
+ *
+ * The removed state is the design problem here. A review that is no longer on
+ * the listing has to look plainly different without looking deleted — it is
+ * still real, still says what it said, and is often the only surviving copy —
+ * so it recedes rather than being struck through, and the badge carries the
+ * fact in words.
+ */
+.review-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.review {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.review:first-child {
+  padding-top: 0;
+}
+
+.review:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.review-list-compact .review {
+  padding: 12px 0;
+}
+
+/* Recessive, not erased: the text stays legible because it is the point. */
+.review-removed .review-body,
+.review-removed .review-store {
+  color: var(--text-secondary);
+}
+
+.review-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.review-store {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.review-meta {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.review-body {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.review-reply {
+  margin: 0 0 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+}
+
+.review-reply p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+.review-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.review-customer {
+  font-size: 12px;
+  color: var(--brand-accent);
+  text-decoration: none;
+}
+
+.review-customer:hover {
+  text-decoration: underline;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/*
+ * Stars carry the rating twice over: as a shape and as an `aria-label`. The
+ * filled glyphs owe 3:1 as marks, and the empty ones are deliberately below
+ * that — they are the absence of a rating, and reading them as filled is the
+ * only failure that would matter.
+ */
+.stars {
+  font-size: 13px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.stars-1,
+.stars-2 {
+  color: var(--critical);
+}
+
+.stars-4,
+.stars-5 {
+  color: var(--good);
+}
+
+.stars-empty {
+  color: var(--border);
+}
+
+.pill-removed {
+  color: var(--delta-down);
+  border-color: color-mix(in srgb, var(--delta-down) 40%, transparent);
+}
+
+/* An edit is a change, not a verdict — the rating beside it says which. */
+.pill-edited {
+  color: var(--muted);
+}
+
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 12px;
+  color: var(--brand-accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.review-picker {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.review-picker label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.review-picker input {
+  width: 100%;
+}
+
+.review-picker-error {
+  margin: 8px 0 0;
+  color: var(--delta-down);
+  font-size: 12px;
+}
+
+.review-candidates {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.review-candidates button {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.review-candidates button:hover:not(:disabled) {
+  background: var(--hover-wash);
+}
+
+.review-candidates button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.candidate-name {
+  display: block;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.candidate-meta,
+.candidate-empty {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.candidate-empty {
+  padding: 6px 8px;
+}
+
+.review-picker-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* The merchant's own words on the timeline, quoted rather than restated. */
+.event-quote {
+  margin: 4px 0 6px;
+  padding-left: 10px;
+  border-left: 2px solid var(--border);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------- customer detail: apps
+ *
+ * The Apps table carries a review in one of its cells, which is a paragraph of
+ * prose in a column that has to stay scannable. Only the rating and whether it
+ * still stands are inline; the text lives in a popover a click away.
+ */
+/* Right-aligned like every other cell in this table but the first. */
+.review-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/*
+ * Underlined, because a row of stars reads as a rendered value rather than as
+ * something to press. The rule is drawn in the border colour so it signals
+ * "clickable" without competing with the stars it sits under, and firms up on
+ * hover the way the other link-like controls here do.
+ */
+.review-stars-button {
+  background: none;
+  border: 0;
+  padding: 2px;
+  margin: -2px;
+  border-radius: 4px;
+  cursor: pointer;
+  line-height: 1;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+}
+
+.review-stars-button:hover {
+  background: var(--hover-wash);
+  text-decoration-color: var(--text-secondary);
+}
+
+/*
+ * Pinned to the viewport rather than anchored in the cell.
+ *
+ * The table lives in a `.table-wrap`, and an `overflow-x: auto` ancestor clips
+ * on both axes — an absolutely-positioned panel in the last column would be cut
+ * off at exactly the edge it opens against. `top`/`right` are measured from the
+ * trigger when it opens, and any scroll closes it.
+ */
+.review-popover {
+  position: fixed;
+  z-index: 20;
+  width: min(380px, 70vw);
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-1);
+  box-shadow: var(--shadow-md);
+  white-space: normal;
+  /* The cell it opens from is a numeric column and aligns its text right.
+     Prose does not inherit that. */
+  text-align: left;
+  /* A merchant can write at length. Cap it and scroll rather than letting the
+     panel run off whichever edge it opened towards. */
+  max-height: min(320px, 60vh);
+  overflow-y: auto;
+}
+
+/* Dark mode builds elevation from surface value rather than shadow, so a
+   popover over a card needs a border that reads at this depth. */
+:root[data-theme='dark'] .review-popover {
+  background: var(--surface-2);
+}
+
+.review-popover .review-body {
+  margin: 8px 0;
+}
+
+.review-popover .review-head {
+  margin-bottom: 0;
+}
+
+.pill-published {
+  color: var(--delta-up);
+  border-color: color-mix(in srgb, var(--delta-up) 40%, transparent);
+}
+
+/* A second line inside a table cell: the money behind a payment count. */
+.cell-note {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.muted-cell {
+  color: var(--muted);
+}
+
+/* ------------------------------------------------ collapsible card heading */
+.card-collapse {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.card-collapse-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  transition: transform 150ms ease;
+}
+
+.chevron-open {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------- attention banner
+ *
+ * A compact strip, not a `.notice`: it reports something to *do* rather than
+ * something that went wrong, so it keeps the critical accent for the eye but
+ * stays one line tall and carries its action with it.
+ */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-1);
+}
+
+.banner p {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  max-width: 82ch;
+}
+
+.banner strong {
+  font-size: 13px;
+}
+
+/* The left rule carries the severity; the text stays on the card surface where
+   it keeps its 4.5:1, rather than being set on a tinted fill. */
+.banner-attention {
+  border-left: 3px solid var(--critical);
+}
+
+/* ------------------------------------------------------------------ modal */
+.modal {
+  width: min(680px, calc(100vw - 32px));
+  max-height: min(80vh, 760px);
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
+  overflow-y: auto;
+}
+
+/* Dark mode builds elevation from surface value, so a panel above a card takes
+   the next step up rather than a shadow it has deliberately turned off. */
+:root[data-theme='dark'] .modal {
+  background: var(--surface-2);
+}
+
+.modal::backdrop {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+:root[data-theme='dark'] .modal::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modal-close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: var(--hover-wash);
+}
+
+.modal .card-subtitle {
+  margin: 6px 0 14px;
+  max-width: 72ch;
+}
+
+/* ---------------------------------------------------------------- funnel */
+
+/*
+ * Stage colours: ordinal, not categorical.
+ *
+ * Funnel steps are a sequence — swapping two would change the meaning — so they
+ * take ONE hue stepping in lightness rather than five identities. Both ramps
+ * are checked for monotone lightness, a visible gap between neighbours, and a
+ * light end that still clears its surface. Step 1 is the anchor end, which
+ * flips between modes so the first stage is always the most present.
+ */
+:root {
+  --funnel-1: #1d4f96;
+  --funnel-2: #2560b4;
+  --funnel-3: #2e72d2;
+  --funnel-4: #5a94dd;
+  --funnel-5: #8fb8e8;
+}
+
+:root[data-theme='dark'] {
+  --funnel-1: #b5d3f5;
+  --funnel-2: #8fb8e8;
+  --funnel-3: #6ba3e8;
+  --funnel-4: #4587d9;
+  --funnel-5: #2560b4;
+}
+
+/* --- the headline ------------------------------------------------------- */
+
+.funnel-headline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.funnel-headline-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.funnel-headline-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/*
+ * The hero figure. Proportional digits, not tabular: at this size `tabular-nums`
+ * gives every digit the width of a zero and the number reads loose.
+ */
+.funnel-headline-value {
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.funnel-headline-sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* --- table / chart switch ------------------------------------------------ */
+
+.funnel-views {
+  display: flex;
+  flex: 0 0 auto;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+
+.funnel-views button {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.funnel-views button:hover {
+  color: var(--text-primary);
+}
+
+.funnel-views button.active {
+  background: var(--surface-1);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.funnel-views button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+/* --- the table ----------------------------------------------------------- */
+
+.funnel-card {
+  padding-bottom: 8px;
+}
+
+/*
+ * A year of daily columns has to go somewhere; it scrolls inside the card
+ * rather than pushing the page sideways.
+ *
+ * No horizontal padding, and that is deliberate. A sticky cell freezes at the
+ * scrollport's padding edge, so any left padding is a strip the frozen column
+ * does not cover and the scrolling columns slide through — which reads as the
+ * table leaking out from behind its own first column.
+ */
+.funnel-scroll {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+/*
+ * `border-collapse: separate` is load-bearing, not a preference.
+ *
+ * Under `collapse`, borders belong to the table rather than to its cells, so a
+ * sticky cell scrolls away from its own border and the rows underneath bleed
+ * through the frozen column. Separate borders travel with the cell that owns
+ * them, which is what makes the first column actually opaque.
+ */
+/*
+ * `table-layout: fixed` is the other half of the alignment fix.
+ *
+ * Under `auto`, a `<col>` width is a suggestion: the step column grows to fit
+ * its content, while the frozen Total column is pinned at `left: var(--step-w)`
+ * — a constant. The two disagree the moment the content is wider than the
+ * suggestion, and the Total column parks itself on top of the step labels.
+ * Fixed layout makes the declared widths the real ones, so the offset below is
+ * always the column it is measuring.
+ *
+ * `width: max-content` then keeps those widths instead of squeezing them back
+ * into the card, which is what gives the scroll container something to scroll.
+ */
+.funnel-table {
+  --step-w: 264px;
+  --total-w: 104px;
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+
+.funnel-col-step {
+  width: var(--step-w);
+}
+
+.funnel-col-total {
+  width: var(--total-w);
+}
+
+.funnel-col-bucket {
+  width: 96px;
+}
+
+/*
+ * One padding, one alignment, one border for every cell in the table — header
+ * and body alike. The columns only line up if the header cell and the data
+ * cell under it are laid out by the same rules, which is why nothing here is
+ * scoped to `thead` or `tbody`.
+ */
+.funnel-table th,
+.funnel-table td {
+  padding: 10px 14px;
+  text-align: right;
+  vertical-align: top;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--rule);
+}
+
+.funnel-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface-1);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+/*
+ * The frozen step column. `display` stays `table-cell` — making it a flex
+ * container takes it out of table layout, and its height then stops agreeing
+ * with the row it belongs to, which is exactly how the labels drifted out of
+ * line with their values. The inner spans do the arranging instead.
+ */
+/* Scoped through `.funnel-table` deliberately: `.funnel-table th` already sets
+   `text-align: right`, and a bare `.funnel-cell-step` loses to it on
+   specificity — which is how the step labels ended up right-aligned, drifting
+   further from the row number on every longer label. */
+.funnel-table .funnel-cell-step {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface-1);
+  text-align: left;
+  white-space: normal;
+}
+
+.funnel-table .funnel-cell-total {
+  position: sticky;
+  left: var(--step-w);
+  z-index: 1;
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+/* Dates wrap rather than spill: a fixed 96px column cannot hold "Week of
+   10 Aug" on one line, and an overflowing header is what makes a column look
+   misaligned with the numbers under it. */
+.funnel-table thead th {
+  white-space: normal;
+}
+
+/* The two frozen header cells sit above both the column that scrolls under
+   them and the rows that scroll beneath. */
+.funnel-table thead .funnel-cell-step,
+.funnel-table thead .funnel-cell-total {
+  z-index: 3;
+}
+
+/* A right edge on the frozen pair, so the scroll boundary is visible rather
+   than inferred from numbers sliding under text. */
+.funnel-cell-total {
+  box-shadow: 1px 0 0 var(--border);
+}
+
+.funnel-step-index {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--brand) 14%, transparent);
+  color: var(--brand-accent);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+}
+
+.funnel-cell-step .funnel-step-index {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.funnel-step-label {
+  color: var(--text-primary);
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.funnel-source-bigquery,
+.funnel-source-partner {
+  margin-left: 8px;
+  font-size: 10px;
+  vertical-align: middle;
+}
+
+.funnel-source-bigquery {
+  color: var(--series-2);
+  border-color: color-mix(in srgb, var(--series-2) 40%, transparent);
+}
+
+/*
+ * The final-conversion row.
+ *
+ * The one rule heavier than a row divider in this table, now that the
+ * browser/shop seam no longer draws one: above it every cell is a count with a
+ * rate under it, below it there are no counts at all. The wash runs the width of
+ * the row so the band reads as one statement rather than as a sixth step that
+ * lost its label.
+ */
+.funnel-final > th,
+.funnel-final > td {
+  border-top: 2px solid var(--border);
+  border-bottom: none;
+}
+
+.funnel-table tfoot td {
+  background: var(--surface-2);
+}
+
+/* The span being measured, under the row's name. Wraps, like the headers do —
+   two step labels do not fit 264px on one line. */
+.funnel-final-span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: normal;
+}
+
+/*
+ * Drawn in the brand rather than in body ink, and heavier than the
+ * step-over-step rates above it. It is the only figure in the table that is not
+ * relative to the line above, so it should not look like one more of them.
+ */
+.funnel-final-value {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brand-accent);
+}
+
+.funnel-final-value.empty {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.funnel-count {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+/*
+ * The conversion under a count.
+ *
+ * No bar behind it: the old one encoded the same value as the digits it sat
+ * under, so it added a second, blurrier copy of the number and read as a stray
+ * underline. The arrow says which way the rate is measured; the digits say how
+ * much.
+ */
+.funnel-conv {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.funnel-conv.empty {
+  color: var(--muted);
+}
+
+/* Still filling. Same treatment the metric cards give their last point. */
+.funnel-table .provisional {
+  opacity: 0.72;
+}
+
+.funnel-table tbody tr:hover td {
+  background: var(--hover-wash);
+}
+
+/*
+ * The frozen columns keep an OPAQUE background on hover.
+ *
+ * `--hover-wash` is a translucent ink meant to sit over whatever is beneath it.
+ * On an ordinary cell that is the card; on a sticky cell it is the rows
+ * scrolling underneath, which then show straight through the frozen column —
+ * the labels and the numbers sliding past each other in the same space.
+ *
+ * The wash is painted as a background *image* over an opaque background
+ * *colour*, so the two composite inside the cell and nothing behind it is ever
+ * visible. `color-mix(… 100%, …)` cannot do this: 100% of the wash is just the
+ * wash, alpha and all.
+ */
+.funnel-table tbody tr:hover .funnel-cell-step,
+.funnel-table tbody tr:hover .funnel-cell-total {
+  background-image: linear-gradient(var(--hover-wash), var(--hover-wash));
+}
+
+.funnel-table tbody tr:hover .funnel-cell-step {
+  background-color: var(--surface-1);
+}
+
+.funnel-table tbody tr:hover .funnel-cell-total {
+  background-color: var(--surface-2);
+}
+
+.funnel-card.stale {
+  opacity: 0.6;
+  transition: opacity 120ms ease;
+}
+
+/* --- the step picker ------------------------------------------------------ */
+
+.funnel-settings {
+  position: relative;
+  display: inline-flex;
+}
+
+.funnel-settings-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.funnel-settings-button:hover {
+  border-color: var(--border);
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.funnel-settings-button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+/* Round joins, or the cog's twelve corners render as spikes at this size. */
+.funnel-settings-button svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.funnel-settings-panel {
+  position: absolute;
+  top: 28px;
+  z-index: 20;
+  width: 268px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-1);
+  box-shadow: var(--shadow-md);
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+}
+
+/* The trigger sits at the right edge of the card head, so the panel hangs from
+   that edge — anchored left it would open off the side of the window. */
+.funnel-settings-panel {
+  right: 0;
+}
+:root[data-theme='dark'] .funnel-settings-panel {
+  background: var(--surface-2);
+}
+
+.funnel-settings-title {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.funnel-settings-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.funnel-settings-row span:first-of-type {
+  flex: 1 1 auto;
+}
+
+/* The last two steps cannot be unchecked — a funnel with one step has no
+   conversion to report. Shown as unavailable rather than silently ignoring. */
+.funnel-settings-row.locked {
+  cursor: default;
+  color: var(--text-secondary);
+}
+
+.funnel-settings-note {
+  margin: 8px 0 0;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* --- the chart ------------------------------------------------------------ */
+
+.funnel-chart {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.funnel-bar-row {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr) 92px;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 6px;
+  border-radius: 8px;
+}
+
+.funnel-bar-row:hover {
+  background: var(--hover-wash);
+}
+
+.funnel-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.funnel-bar-label .funnel-step-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.funnel-bar-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* 4px rounded data end, anchored to a common left baseline: the taper is what
+   reads as a funnel, and a shared baseline is what makes two lengths
+   comparable. */
+.funnel-bar {
+  height: 26px;
+  min-width: 3px;
+  border-radius: 3px 4px 4px 3px;
+  transition: width 160ms ease;
+}
+
+.funnel-bar-value {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.funnel-bar-absent {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.funnel-bar-conv {
+  text-align: right;
+}
+
+.funnel-bar-conv .funnel-conv {
+  margin-top: 0;
+}
+
+/* --- notes ---------------------------------------------------------------- */
+
+.funnel-notes {
+  margin: 16px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.funnel-notes li {
+  margin-bottom: 6px;
+}
+
+@media (max-width: 720px) {
+  .funnel-headline-value {
+    font-size: 38px;
+  }
+
+  .funnel-bar-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .funnel-bar-conv {
+    text-align: left;
+  }
+}
+.notice.warn {
+  border-color: var(--series-4);
+}
+
+.notice.warn p:last-child {
+  margin-bottom: 0;
+}
+
+/* Visible to a screen reader, and to nothing else. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The service-account key. Monospaced because it is pasted, never typed. */
+.bq-key {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.bq-key:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+/*
+ * A column of form rows with even spacing.
+ *
+ * The form's own column gap is the section gap; this is the tighter gap
+ * between fields *within* a section, which is why it survives now that
+ * `.channel-form` owns the rhythm.
+ */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* The stack owns the rhythm; the children's own margins would double it. */
+.form-stack > p {
+  margin: 0;
+}
+
+/*
+ * The line under a field saying where its value comes from.
+ *
+ * Sits inside `.control`, so the column gap already separates it from the
+ * input. Muted and small: it is scaffolding for the first time someone fills
+ * the form in, and should read as absent every time after that.
+ */
+.field-hint {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.field-hint code {
+  background: var(--hover-wash);
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 10px;
+}
+
+.field-hint strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* The ordered first-run checklist inside the empty-state notice. */
+.setup-steps {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.setup-steps li {
+  margin-bottom: 8px;
+}
+
+.setup-steps li::marker {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Rows inside a form stack align to the top of their controls, not the bottom.
+ *
+ * `.field-row` aligns to `flex-end` because elsewhere a row is inputs and a
+ * button, and the button wants to sit on the input's baseline. Here the
+ * controls carry hints of different heights underneath, and bottom alignment
+ * staggers the inputs by however much the hints differ. Labels are one line
+ * each, so aligning tops puts the inputs back on one line.
+ */
+.form-stack .field-row {
+  align-items: flex-start;
+}
+
+/*
+ * A field that should stay narrow even when its hint is long.
+ *
+ * `.control` sizes to its widest child, and a two-line click-path underneath a
+ * three-character input makes the input three hundred pixels wide. The basis
+ * pins the column; the hint wraps inside it.
+ */
+.control-narrow {
+  flex: 0 1 240px;
+  min-width: 160px;
+}
+
+.control-narrow input {
+  width: 100%;
+}
+
+/*
+ * `.control-grow` is `flex: 1 1 380px`, written for a row where 380px is a
+ * width. A form stack is a column, so that basis becomes a *height* and every
+ * full-width field reserves 380 blank pixels under itself. The stack's own gap
+ * is doing the spacing here, so these children just size to content.
+ */
+.form-stack > .control-grow {
+  flex: 0 0 auto;
+}
+
+/* The view switch sits inside the settings panel now, so it fills its width
+   rather than hugging its label out on the headline card. */
+.funnel-settings-panel .funnel-views {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.funnel-settings-panel .funnel-views button {
+  flex: 1 1 0;
+}
+
+/* A second heading inside the panel needs air above it; the first does not. */
+.funnel-settings-title.spaced {
+  margin-top: 14px;
+}

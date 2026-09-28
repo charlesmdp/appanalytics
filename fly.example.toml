@@ -1,0 +1,91 @@
+# Template for fly.toml, which is gitignored because it carries the real
+# credentials. Copy it and fill in the placeholders:
+#
+#   cp fly.example.toml fly.toml
+#
+# Never commit fly.toml, and never paste its contents anywhere. The gitignore
+# is the only thing between the token below and a public repo.
+
+app = "<your-app-name>"
+primary_region = "<your-region>"
+
+[build]
+
+[env]
+  # --- Runtime -------------------------------------------------------------
+  PORT = "8787"
+  # Must live on the mounted volume; anything else is lost on redeploy.
+  DATABASE_PATH = "/data/partnerdex.db"
+  # IANA timezone used to resolve period presets and bucket boundaries.
+  REPORTING_TIMEZONE = "UTC"
+  # Fly terminates TLS in front of the app. Required here, or the session
+  # cookie loses its Secure flag and the login lockout keys on the proxy IP.
+  TRUST_PROXY = "true"
+
+  # --- Partner API ---------------------------------------------------------
+  # The numeric organization id, from your Partners Dashboard URL:
+  # https://partners.shopify.com/<PARTNER_ORGANIZATION_ID>/...
+  PARTNER_ORGANIZATION_ID = "<your-org-id>"
+  PARTNER_API_VERSION = "2026-07"
+
+  # --- Scope ---------------------------------------------------------------
+  # Comma-separated app ids to report on; empty includes every app in the org.
+  # Use this to keep development apps out of production reporting.
+  PARTNER_APP_IDS = ""
+  # Earliest date to backfill from. Older history is skipped.
+  SYNC_START_DATE = "2015-01-01"
+  # Minutes between background syncs. 0 turns the loop off.
+  SYNC_INTERVAL_MINUTES = "5"
+
+  # --- Reporting defaults (all overridable per request) ---------------------
+  METRICS_INCLUDE_ANNUAL = "true"
+  METRICS_INCLUDE_USAGE = "true"
+  METRICS_INCLUDE_TRIALS = "false"
+  METRICS_BY_SHOP = "true"
+  TRIAL_MIN_GAP_DAYS = "2"
+  CHURN_WINDOW_DAYS = "30"
+  CHURN_ON_UNINSTALL = "true"
+  PLAN_CHANGE_WINDOW_DAYS = "2"
+  CACHE_TTL_SECONDS = "600"
+
+  # --- Credentials ---------------------------------------------------------
+  # Partners Dashboard > Settings > Partner API clients, with the
+  # "View financials" and "Manage apps" permissions.
+  PARTNER_API_TOKEN = "<your-partner-api-token>"
+  # Required. Empty means the dashboard has no login at all, and on Fly that
+  # puts your revenue data on the public internet. 8 chars is the floor the
+  # config enforces, not a recommendation.
+  DASHBOARD_PASSWORD = "<your-dashboard-password>"
+
+[mounts]
+  source = "partnerdex_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  # One machine, always on. A Fly volume attaches to a single machine, and the
+  # background sync loop only runs while that machine is up — a stopped machine
+  # syncs nothing and a second machine would double-write the same SQLite file.
+  auto_stop_machines = false
+  auto_start_machines = false
+  min_machines_running = 1
+
+  # The timeout is deliberately generous. This is a single-threaded Node process
+  # over synchronous SQLite, so any long read holds the event loop and the
+  # health endpoint answers late even though the machine is perfectly fine. The
+  # sync itself runs in a child process and no longer blocks (see
+  # src/sync/worker.ts), but a cold metric recompute — the cache is cleared at
+  # the end of every sync — still runs on the request thread and takes seconds
+  # on a shared vCPU. A tight timeout turns that into a false "app is not
+  # responding" alert and intermittent 502s on a healthy deploy.
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "15s"
+    grace_period = "30s"
+    method = "GET"
+    path = "/api/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

@@ -1,0 +1,89 @@
+{
+  "name": "partnerdex",
+  "version": "0.1.0",
+  "description": "Analytics Big Download + Cowlendar, prêts à déployer sur Cloudflare.",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "partnerdex": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "npm run cf:build",
+    "build:server": "tsc -p tsconfig.json",
+    "build:web": "vite build",
+    "dev": "concurrently -n api,web -c blue,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "tsx watch src/cli.ts serve",
+    "dev:web": "vite",
+    "sync": "tsx src/cli.ts sync",
+    "rebuild": "tsx src/cli.ts rebuild",
+    "doctor": "tsx src/cli.ts doctor",
+    "validate": "tsx src/cli.ts validate",
+    "start": "node dist/cli.js serve",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p web/tsconfig.json --noEmit",
+    "test": "node --test --import tsx test/*.test.ts",
+    "cf:build": "npm run cf:schema && vite build --config cloudflare/vite.config.ts",
+    "cf:typecheck": "tsc -p cloudflare/tsconfig.json",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "wrangler deploy",
+    "cf:migrate:local": "wrangler d1 migrations apply BIG_DOWNLOAD_DB --local && wrangler d1 migrations apply COWLENDAR_DB --local",
+    "cf:migrate:remote": "wrangler d1 migrations apply BIG_DOWNLOAD_DB --remote && wrangler d1 migrations apply COWLENDAR_DB --remote",
+    "cf:test": "node --test --import tsx cloudflare/test/*.test.ts",
+    "build:original": "npm run build:server && npm run build:web",
+    "cf:schema": "node cloudflare/scripts/schema.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^8.3.1",
+    "better-sqlite3": "^11.5.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260928.1",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.17.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.1.0",
+    "prettier": "^3.9.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.13.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vite": "^6.4.3",
+    "wrangler": "^4.143.0"
+  },
+  "cloudflare": {
+    "label": "Penida Analytics",
+    "bindings": {
+      "DASHBOARD_PASSWORD": {
+        "description": "Choisis le mot de passe du dashboard : au moins 12 caractères, long et unique. Seule cette valeur sera demandée pour te connecter au site."
+      },
+      "PARTNER_TOKEN_BIG_DOWNLOAD": {
+        "description": "Jeton Partner API de Big Download, compte Shopify Partners 655806. Permissions : View financials et Manage apps."
+      },
+      "PARTNER_TOKEN_COWLENDAR": {
+        "description": "Jeton Partner API de Cowlendar, compte Shopify Partners 4386727. Permissions : View financials et Manage apps."
+      },
+      "BIG_DOWNLOAD_DB": {
+        "description": "Historique Big Download. Créée et initialisée automatiquement."
+      },
+      "COWLENDAR_DB": {
+        "description": "Historique Cowlendar. Créée et initialisée automatiquement."
+      },
+      "SYNC_QUEUE": {
+        "description": "Import reprenable en arrière-plan. Configuration automatique."
+      },
+      "AI_ENABLED": {
+        "description": "false par défaut. Mettre true pour activer les analyses IA à la demande (tarification Workers AI distincte)."
+      }
+    }
+  }
+}

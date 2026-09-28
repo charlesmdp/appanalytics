@@ -1,0 +1,5 @@
+# Cloudflare affiche ces trois champs lors du déploiement.
+# Laisser les valeurs vides dans GitHub. Les remplir uniquement dans Cloudflare.
+DASHBOARD_PASSWORD=""
+PARTNER_TOKEN_BIG_DOWNLOAD=""
+PARTNER_TOKEN_COWLENDAR=""

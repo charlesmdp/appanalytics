@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PartnerDex</title>
+    <!-- Ungated: the auth gate is mounted on /api, so the tab shows the mark
+         even on the login screen. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!--
+      The theme is settled before the first paint, so a reader who chose light
+      never sees a dark frame flash past on reload. Dark is the default and the
+      only fallback: there is no "system" state to resolve.
+    -->
+    <script>
+      document.documentElement.dataset.theme =
+        localStorage.getItem('partnerdex:theme') === 'light' ? 'light' : 'dark';
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
